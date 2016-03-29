@@ -12,7 +12,6 @@ defmodule A3.Mixfile do
 
   def application do
     [
-      mod: {WebStats, []},
       applications: [:logger, :httpoison]
     ]
   end

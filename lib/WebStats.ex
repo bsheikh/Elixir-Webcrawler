@@ -1,13 +1,25 @@
-defmodule WebStats do
-  use Application
+defmodule Assignment3 do
+  use HTTPoison.Base
 
-  def start(_type, _args) do
-    IO.puts "Hello world"
-
+  def startOn(url, maxPages \\ 10, maxDepth \\ 3) do
 
 
-    # prevents bad value from returning
-    # http://stackoverflow.com/questions/30687781/how-to-run-elixir-application
-    Task.start(fn -> :timer.sleep(1000); IO.puts("done sleeping") end)
+    case HTTPoison.get() do
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+        IO.puts body
+      {:ok, %HTTPoison.Response{status_code: 404}} ->
+        IO.puts "Not found :("
+      {:error, %HTTPoison.Error{reason: reason}} ->
+        IO.inspect reason
+    end
+
+  end
+
+  def process_url(url), do: "http://" <> url
+
+  def process_response_body(body) do
+    body
+    |> Poison.decode!
+    |> Enum.map(fn({k, v}) -> {String.to_atom(k), v} end)
   end
 end
