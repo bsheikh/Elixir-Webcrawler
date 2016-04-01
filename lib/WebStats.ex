@@ -1,25 +1,33 @@
-defmodule Assignment3 do
+defmodule WebStats do
   use HTTPoison.Base
 
+
   def startOn(url, maxPages \\ 10, maxDepth \\ 3) do
+    stringResponce = getContent(url)
+    parseContent(stringResponce)
+  end
 
-
-    case HTTPoison.get() do
+  def getContent(url) do
+    case HTTPoison.get(url) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        IO.puts body
-      {:ok, %HTTPoison.Response{status_code: 404}} ->
-        IO.puts "Not found :("
+        body
       {:error, %HTTPoison.Error{reason: reason}} ->
-        IO.inspect reason
+        nil
     end
-
   end
 
-  def process_url(url), do: "http://" <> url
-
-  def process_response_body(body) do
-    body
-    |> Poison.decode!
-    |> Enum.map(fn({k, v}) -> {String.to_atom(k), v} end)
+  def parseContent(stringtoParse) do
+    stringArray = String.split(stringtoParse, "\n")
+    for string <- stringArray do
+      patternMatch = Regex.run(~r/< ?([A-Za-z]+)/i, string)
+      if !is_nil(patternMatch) do
+        IO.puts List.last(patternMatch)
+      end
+    end
   end
+
+
+  defp printTags() do
+  end
+
 end
