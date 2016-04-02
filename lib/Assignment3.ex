@@ -1,8 +1,26 @@
 defmodule Assignment3 do
 
   def startOn(url, maxPages \\ 10, maxDepth \\ 3) do
+
+    globalUrlStatsMap = Map.new
+
     stringResponce = Assignment3.WebCrawler.getContent(url)
-    Assignment3.WebCrawler.parseContent(stringResponce)
+    localUrlStatMap = Assignment3.WebCrawler.parseContent(stringResponce)
+    globalUrlStatsMap = mergeLocalMapAndGlobalMap(globalUrlStatsMap,localUrlStatMap)
+
+    globalUrlStatsMap = sortGlobalMap(globalUrlStatsMap) #method should be called last
+    IO.inspect globalUrlStatsMap #once sorted, this prints the map
+    :done
+  end
+
+  defp mergeLocalMapAndGlobalMap(globalMap, localMap) do
+    Map.merge(globalMap, localMap, fn _k, v1, v2 ->
+      v1 + v2
+    end)
+  end
+
+  defp sortGlobalMap(globalMap) do
+    globalMap
   end
 
   defmodule WebCrawler do
@@ -48,7 +66,7 @@ defmodule Assignment3 do
       stringArray = String.split(stringtoParse, "\n")
       localUrlStatMap = fill_localUrlsWithStats(stringArray, Map.new)
       printLocalUrlStatMap(localUrlStatMap)
-      :ok
+      localUrlStatMap
     end
 
     defp printLocalUrlStatMap(localUrlStatMap) do
