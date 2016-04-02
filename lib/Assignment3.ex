@@ -17,40 +17,27 @@ defmodule Assignment3 do
       end
     end
 
-    def parseContent(stringtoParse) do
-      localUrlsWithStats = Map.new
-      stringArray = String.split(stringtoParse, "\n")
-      localUrlsWithStats = for string <- stringArray do
-        patternMatch = Regex.run(~r/< ?([A-Za-z]+)/i, string)
-        if !is_nil(patternMatch) do
-          IO.puts List.last(patternMatch)
-          # Map.put(localUrlsWithStats, List.last(patternMatch), 1)
-          # if Map.has_key?(localUrlsWithStats, List.last(patternMatch)) do
-          #   currentValue = Map.get(localUrlsWithStats, List.last(patternMatch))
-          #   newCurrentValue = currentValue + 1
-          #   IO.puts newCurrentValue
-          #   Map.put(localUrlsWithStats, List.last(patternMatch), newCurrentValue)
-          # else
-          #   Map.put(localUrlsWithStats, List.last(patternMatch), 1)
-          # end
+    def fill_localUrlsWithStats([], localUrlStatBuilder) do
+      localUrlStatBuilder
+    end
+
+    def fill_localUrlsWithStats([head|tail], localUrlStatBuilder) do
+      patternMatch = Regex.run(~r/< ?([A-Za-z]+)/i, head)
+      if !is_nil(patternMatch) do
+        if Map.has_key?(localUrlStatBuilder, List.last(patternMatch)) do
+          currentValue = Map.get(localUrlStatBuilder, List.last(patternMatch))
+          localUrlStatBuilder = Map.put(localUrlStatBuilder, List.last(patternMatch), currentValue+1)
         else
-          :ok
+          localUrlStatBuilder = Map.put(localUrlStatBuilder, List.last(patternMatch), 1)
         end
       end
+      fill_localUrlsWithStats(tail, localUrlStatBuilder)
     end
 
-    # defp incrementLocalUrlStats(pattern) do
-    #   if Map.has_key?(localUrlsWithStats, pattern) do
-    #
-    #   else
-    #     Map.put(localUrlsWithStats, pattern, 1)
-    #   end
-    # end
-
-    defp incrementGlobalUrlStats(pattern) do
-    end
-
-    defp printLocalUrlStats do
+    def parseContent(stringtoParse) do
+      localUrlStatMap = Map.new
+      stringArray = String.split(stringtoParse, "\n")
+      localUrlStatMap = fill_localUrlsWithStats(stringArray, Map.new)
     end
 
   end
