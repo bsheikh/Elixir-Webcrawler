@@ -52,9 +52,11 @@ defmodule Assignment3 do
           aTagPatternMatch = Regex.run(~r/href=\"((http|https):[^ ]+)\"/i, head)
           if !is_nil(aTagPatternMatch) do
             IO.puts "Link Found"
-            IO.puts aTagPatternMatch
+            aTagPatternMatch = List.delete(aTagPatternMatch, "https")
+            IO.puts List.last(aTagPatternMatch)
             # TODO: use aTagPatternMatch to do multi-threading
             #       aTagPatternMatch contains the link
+            #Assignment3.startOn(aTagPatternMatch)
           end
         end
       end
