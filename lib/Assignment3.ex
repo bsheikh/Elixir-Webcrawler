@@ -30,6 +30,15 @@ defmodule Assignment3 do
         else
           localUrlStatBuilder = Map.put(localUrlStatBuilder, List.last(patternMatch), 1)
         end
+        if List.last(patternMatch) === "a" do
+          aTagPatternMatch = Regex.run(~r/href=\"((http|https):[^ ]+)\"/i, head)
+          if !is_nil(aTagPatternMatch) do
+            IO.puts "Link Found"
+            IO.puts aTagPatternMatch
+            # TODO: use aTagPatternMatch to do multi-threading
+            #       aTagPatternMatch contains the link
+          end
+        end
       end
       fill_localUrlsWithStats(tail, localUrlStatBuilder)
     end
@@ -38,6 +47,12 @@ defmodule Assignment3 do
       localUrlStatMap = Map.new
       stringArray = String.split(stringtoParse, "\n")
       localUrlStatMap = fill_localUrlsWithStats(stringArray, Map.new)
+      printLocalUrlStatMap(localUrlStatMap)
+      :ok
+    end
+
+    defp printLocalUrlStatMap(localUrlStatMap) do
+      IO.inspect localUrlStatMap, char_lists: :as_lists
     end
 
   end
