@@ -1,16 +1,12 @@
 defmodule Assignment3 do
 
-
   def startOn(url, maxPages \\ 10, maxDepth \\ 3) do
     stringResponce = Assignment3.WebCrawler.getContent(url)
     Assignment3.WebCrawler.parseContent(stringResponce)
   end
 
-
   defmodule WebCrawler do
     use HTTPoison.Base
-
-    localUrlStat = Map.new
 
     def getContent(url) do
       case HTTPoison.get(url) do
